@@ -1,18 +1,20 @@
+import FlappyBird from './TRexJump';
+
 class Game {
-    constructor() {
+    flappyBird: FlappyBird;
+    public constructor() {
         console.log('Game created');
+        this.flappyBird = new FlappyBird();
     }
-    render() {
-        console.log('Game rendered');
-
-
-
+    public update()
+    {
+        this.flappyBird.update();
 
         setTimeout(() => {
-            requestAnimationFrame(() => this.render());
-        }, 1000);
+            requestAnimationFrame(() => this.update());
+        }, 100);
     }
 }
 
 let game = new Game();
-game.render();
+game.update();
