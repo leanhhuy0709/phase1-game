@@ -12,7 +12,7 @@ class Game {
 
         setTimeout(() => {
             requestAnimationFrame(() => this.update());
-        }, 100);
+        }, 75);
     }
 }
 

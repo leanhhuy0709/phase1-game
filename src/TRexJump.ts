@@ -26,66 +26,124 @@ export default class TRexJump
     public constructor() {
         console.log('TRexJump created');
         this.tRex = new TRex();
+        document.addEventListener('keydown', (event) => {
+            var name = event.key;
+            var code = event.code;
+            //alert(`Key pressed ${name} \r\n Key code value: ${code}`);
+            if(code == 'Space')
+            {
+                if (this.tRex.state != TRexState.Fall)
+                    this.tRex.state = TRexState.Jump;
+            }
+        }, false);
+        document.addEventListener('keyup', (event) => {
+            var name = event.key;
+            var code = event.code;
+            //alert(`Key pressed ${name} \r\n Key code value: ${code}`);
+            if(code == 'Space')
+            {
+                if (this.tRex.state == TRexState.Jump)
+                    this.tRex.state = TRexState.Fall;
+            }
+        }, false);
     }
     public update()
     {
         document.body.innerHTML = '';
         document.body.setAttribute('style', 'background: white; width: 70%; height: 50%; position: relative;top: 25%;left: 15%');
+        
         console.log('TRexJump updated');
         this.tRex.update();
     }
 }
 
+enum TRexState {
+    Move = 1,
+    Jump,
+    Fall,
+    Die
+}
+
+class Sprite 
+{
+    sprites: string[];
+    stt: number;
+    public constructor(sprites: string[])
+    {
+        this.sprites = sprites;
+        this.stt = 0;
+    }
+    public getSprite()
+    {
+        return this.sprites[this.stt];
+    }
+}
+
 class TRex{
-    moveSprites: string[];
-    jumpSprites: string[];
-    moveStt: number;
-    jumpStt: number;
+    moveSprite: Sprite;
+    jumpSprite: Sprite;
+    fallSprite: Sprite;
     width: number;
     height: number;
-    x: string;
-    y: string;
-    isJump: boolean;
+    x: number;
+    xDefault: number;
+    y: number;
+    yDefault: number;
+    jumpSize: number;
+    state: TRexState;
     public constructor() {
         console.log('TRex created');
-        this.moveSprites = [DINOSAUR_MOVE_1, DINOSAUR_MOVE_2, DINOSAUR_MOVE_3, DINOSAUR_MOVE_4, DINOSAUR_MOVE_5, DINOSAUR_MOVE_6, DINOSAUR_MOVE_7, DINOSAUR_MOVE_8];
-        this.jumpSprites = [DINOSAUR_1, DINOSAUR_2, DINOSAUR_3, DINOSAUR_4, DINOSAUR_5, DINOSAUR_6, DINOSAUR_7, DINOSAUR_8, DINOSAUR_9, DINOSAUR_10, DINOSAUR_11, DINOSAUR_12];
-        this.moveStt = 0;
-        this.jumpStt = 0;
-        this.width = 72;
-        this.height = 50;
-        this.x = "30px";
-        this.y = "80%";
-        this.isJump = false;
+        this.moveSprite = new Sprite([DINOSAUR_MOVE_1, DINOSAUR_MOVE_2, DINOSAUR_MOVE_3, DINOSAUR_MOVE_4, DINOSAUR_MOVE_5, DINOSAUR_MOVE_6, DINOSAUR_MOVE_7, DINOSAUR_MOVE_8]);
+        this.jumpSprite = new Sprite([DINOSAUR_1, DINOSAUR_2, DINOSAUR_3, DINOSAUR_4, DINOSAUR_5, DINOSAUR_5, DINOSAUR_5, DINOSAUR_6, DINOSAUR_6, DINOSAUR_6, DINOSAUR_7]);//, 
+        this.fallSprite = new Sprite([DINOSAUR_8, DINOSAUR_9, DINOSAUR_9, DINOSAUR_9, DINOSAUR_10, DINOSAUR_10, DINOSAUR_10, DINOSAUR_11, DINOSAUR_12]);
+        this.xDefault = 30;
+        this.yDefault = 330;
+        this.jumpSize = 10;
+        
+        this.width = 145;
+        this.height = 100;
+        this.x = this.xDefault;
+        this.y = this.yDefault;
+        this.state = TRexState.Move;
     }
     public update() {
         var img = document.createElement('img');
-        if (!this.isJump)
+        switch(this.state)
         {
-            this.moveStt = (this.moveStt + 1) % this.moveSprites.length;
-            img.setAttribute('src', this.moveSprites[this.moveStt]);
+        case TRexState.Move:
+            this.moveSprite.stt = (this.moveSprite.stt + 1) % this.moveSprite.sprites.length;
+            img.setAttribute('src', this.moveSprite.getSprite());
+            break;
+        case TRexState.Jump:
+            this.y -= this.jumpSize;
+            if (this.jumpSprite.stt + 1 < this.jumpSprite.sprites.length) this.jumpSprite.stt++;
+            img.setAttribute('src', this.jumpSprite.getSprite());
+            if (this.y <= this.yDefault - 15 * this.jumpSize)
+                this.state = TRexState.Fall;
+            break;
+        case TRexState.Fall:
+            this.jumpSprite.stt = 0;
+            this.y += 2 * this.jumpSize;
+            if (this.fallSprite.stt + 2 < this.fallSprite.sprites.length) this.fallSprite.stt = this.fallSprite.stt + 1;
+            if (this.y + 2 * this.jumpSize * 5 >= this.yDefault) this.fallSprite.stt = this.fallSprite.sprites.length - 1;
+            img.setAttribute('src', this.fallSprite.getSprite());
+            if (this.y >= this.yDefault) 
+            {
+                this.y = this.yDefault;
+                this.state = TRexState.Move;
+                this.fallSprite.stt = 0;
+            }
+            break;
+        case TRexState.Die: 
+            break;
         }
-        else 
-        {
-            this.jumpStt = (this.jumpStt + 1) % this.jumpSprites.length;
-            img.setAttribute('src', this.jumpSprites[this.jumpStt]);
-        }
-        img.setAttribute('style', `position: inherit;left: ${this.x};top: ${this.y};width: ${this.width}px; height:  ${this.height}px`);
+        img.setAttribute('style', `position: inherit;left: ${this.x}px;top: ${this.y}px;width: ${this.width}px; height:  ${this.height}px`);
         img.setAttribute('alt', 'TRex Image');
         document.body.appendChild(img);
     }
 }
 
-class Background
-{
-    public constructor() {
-        console.log('Background created');
-    }
-    public update()
-    {
 
-    }
-}
 
 class Road{}
 class Obstacles{}
