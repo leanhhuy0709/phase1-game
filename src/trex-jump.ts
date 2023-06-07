@@ -1,35 +1,35 @@
 //Assets
-const DINOSAUR_1 = '../assets/dinosaur-sprites/Jump (1).png';
-const DINOSAUR_2 = '../assets/dinosaur-sprites/Jump (2).png';
-const DINOSAUR_3 = '../assets/dinosaur-sprites/Jump (3).png';
-const DINOSAUR_4 = '../assets/dinosaur-sprites/Jump (4).png';
-const DINOSAUR_5 = '../assets/dinosaur-sprites/Jump (5).png';
-const DINOSAUR_6 = '../assets/dinosaur-sprites/Jump (6).png';
-const DINOSAUR_7 = '../assets/dinosaur-sprites/Jump (7).png';
-const DINOSAUR_8 = '../assets/dinosaur-sprites/Jump (8).png';
-const DINOSAUR_9 = '../assets/dinosaur-sprites/Jump (9).png';
-const DINOSAUR_10 = '../assets/dinosaur-sprites/Jump (10).png';
-const DINOSAUR_11 = '../assets/dinosaur-sprites/Jump (11).png';
-const DINOSAUR_12 = '../assets/dinosaur-sprites/Jump (12).png';
+const DINOSAUR_1 = 'assets/dinosaur-sprites/Jump (1).png';
+const DINOSAUR_2 = 'assets/dinosaur-sprites/Jump (2).png';
+const DINOSAUR_3 = 'assets/dinosaur-sprites/Jump (3).png';
+const DINOSAUR_4 = 'assets/dinosaur-sprites/Jump (4).png';
+const DINOSAUR_5 = 'assets/dinosaur-sprites/Jump (5).png';
+const DINOSAUR_6 = 'assets/dinosaur-sprites/Jump (6).png';
+const DINOSAUR_7 = 'assets/dinosaur-sprites/Jump (7).png';
+const DINOSAUR_8 = 'assets/dinosaur-sprites/Jump (8).png';
+const DINOSAUR_9 = 'assets/dinosaur-sprites/Jump (9).png';
+const DINOSAUR_10 = 'assets/dinosaur-sprites/Jump (10).png';
+const DINOSAUR_11 = 'assets/dinosaur-sprites/Jump (11).png';
+const DINOSAUR_12 = 'assets/dinosaur-sprites/Jump (12).png';
 
-const DINOSAUR_MOVE_1 = '../assets/dinosaur-sprites/Run (1).png';
-const DINOSAUR_MOVE_2 = '../assets/dinosaur-sprites/Run (2).png';
-const DINOSAUR_MOVE_3 = '../assets/dinosaur-sprites/Run (3).png';
-const DINOSAUR_MOVE_4 = '../assets/dinosaur-sprites/Run (4).png';
-const DINOSAUR_MOVE_5 = '../assets/dinosaur-sprites/Run (5).png';
-const DINOSAUR_MOVE_6 = '../assets/dinosaur-sprites/Run (6).png';
-const DINOSAUR_MOVE_7 = '../assets/dinosaur-sprites/Run (7).png';
-const DINOSAUR_MOVE_8 = '../assets/dinosaur-sprites/Run (8).png';
+const DINOSAUR_MOVE_1 = 'assets/dinosaur-sprites/Run (1).png';
+const DINOSAUR_MOVE_2 = 'assets/dinosaur-sprites/Run (2).png';
+const DINOSAUR_MOVE_3 = 'assets/dinosaur-sprites/Run (3).png';
+const DINOSAUR_MOVE_4 = 'assets/dinosaur-sprites/Run (4).png';
+const DINOSAUR_MOVE_5 = 'assets/dinosaur-sprites/Run (5).png';
+const DINOSAUR_MOVE_6 = 'assets/dinosaur-sprites/Run (6).png';
+const DINOSAUR_MOVE_7 = 'assets/dinosaur-sprites/Run (7).png';
+const DINOSAUR_MOVE_8 = 'assets/dinosaur-sprites/Run (8).png';
 
-const DINOSAUR_DEAD_1 = '../assets/dinosaur-sprites/Dead (6).png';
-const DINOSAUR_IDLE_1 = '../assets/dinosaur-sprites/Idle (1).png';
-const DINOSAUR_DUCK_1 = '../assets/dinosaur-sprites/Duck (1).png';
+const DINOSAUR_DEAD_1 = 'assets/dinosaur-sprites/Dead (6).png';
+const DINOSAUR_IDLE_1 = 'assets/dinosaur-sprites/Idle (1).png';
+const DINOSAUR_DUCK_1 = 'assets/dinosaur-sprites/Duck (1).png';
 
-const BACKGROUND_LIST = ['../assets/background/1.png', '../assets/background/2.png', '../assets/background/3.png']
+const BACKGROUND_LIST = ['assets/background/1.png', 'assets/background/2.png', 'assets/background/3.png']
 
-const CACTUS = '../assets/Cactus/Cactus.png';
-const FLY_DINO_1 = '../assets/fly-dinosaur/1.png';
-const FLY_DINO_2 = '../assets/fly-dinosaur/2.png';
+const CACTUS = 'assets/Cactus/Cactus.png';
+const FLY_DINO_1 = 'assets/fly-dinosaur/1.png';
+const FLY_DINO_2 = 'assets/fly-dinosaur/2.png';
 
 //Canvas
 const CANVAS_WIDTH = 700;
