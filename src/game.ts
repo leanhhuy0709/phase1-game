@@ -1,4 +1,4 @@
-import TRexJump from './TRexJump';
+import TRexJump from './trex-jump';
 
 class Game {
     tRexJump: TRexJump;

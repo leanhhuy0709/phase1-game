@@ -1,3 +1,4 @@
+//Assets
 const DINOSAUR_1 = '../assets/dinosaur-sprites/Jump (1).png';
 const DINOSAUR_2 = '../assets/dinosaur-sprites/Jump (2).png';
 const DINOSAUR_3 = '../assets/dinosaur-sprites/Jump (3).png';
@@ -22,14 +23,27 @@ const DINOSAUR_MOVE_8 = '../assets/dinosaur-sprites/Run (8).png';
 
 const DINOSAUR_DEAD_1 = '../assets/dinosaur-sprites/Dead (6).png';
 const DINOSAUR_IDLE_1 = '../assets/dinosaur-sprites/Idle (1).png';
+const DINOSAUR_DUCK_1 = '../assets/dinosaur-sprites/Duck (1).png';
 
 const BACKGROUND_LIST = ['../assets/background/1.png', '../assets/background/2.png', '../assets/background/3.png']
 
+const CACTUS = '../assets/Cactus/Cactus.png';
+const FLY_DINO_1 = '../assets/fly-dinosaur/1.png';
+const FLY_DINO_2 = '../assets/fly-dinosaur/2.png';
+
+//Canvas
+const CANVAS_WIDTH = 700;
+const CANVAS_HEIGHT = 400;
+
+//Image width 
+const BACKGROUND_WIDTH = 1000;
+const IMAGE_HEIGHT = 400;
+
+// Delay sprite speed
 const DELAY_SPRITE = 10;
-
-
-
-var gameSpeed = 5;
+// Game Speed
+const GAME_SPEED_DEFAULT = 5;
+var gameSpeed = GAME_SPEED_DEFAULT;
 
 enum GAME_STATE
 {
@@ -37,7 +51,7 @@ enum GAME_STATE
     GAME_PLAY = 2,
     GAME_OVER = 3
 }
-
+//Graphics: Use to draw image synchronically
 class Graphics
 {
     static canvas: HTMLCanvasElement = <HTMLCanvasElement> document.getElementById('game');
@@ -80,15 +94,14 @@ class Graphics
         Graphics.imagesStat.length = 0;
     }
 }
-
+//TRexJump: Main class, manage GAME_STATE
 export default class TRexJump
 {
     tRex: TRex;
     obtacles: Obstacles;
     sceneNum: number;
     score: Score;
-    backgroundList: string[];
-    backgroundStt: number;
+    background: Background;
     state: GAME_STATE;
     public constructor()
     {
@@ -96,16 +109,16 @@ export default class TRexJump
     }
     public start() {
         console.log('TRexJump created');
-        Graphics.canvas.width = 700;
-        Graphics.canvas.height = 400;
+        Graphics.canvas.width = CANVAS_WIDTH;
+        Graphics.canvas.height = CANVAS_HEIGHT;
         Graphics.canvas.setAttribute('style', 'margin: auto');
         this.tRex = new TRex();
         this.sceneNum = 0;
         this.obtacles = new Obstacles();
         this.score = new Score();
-        gameSpeed = 5;
-        this.backgroundStt = 0;
+        gameSpeed = GAME_SPEED_DEFAULT;
         this.state = GAME_STATE.GAME_MENU;
+        this.background = new Background();
 
         Graphics.canvas.addEventListener('keydown', (event) => {
             event.preventDefault();
@@ -124,7 +137,10 @@ export default class TRexJump
                     {
                         this.tRex.jumpSize *= 3;
                         this.tRex.state = TREX_STATE.FALL;
-                        
+                    }
+                    if (this.tRex.state == TREX_STATE.MOVE)
+                    {
+                        this.tRex.state = TREX_STATE.DUCK;
                     }
                     break;
             
@@ -143,6 +159,11 @@ export default class TRexJump
                     if (this.tRex.state == TREX_STATE.JUMP)
                         this.tRex.state = TREX_STATE.FALL;
                     break;
+                case 'ArrowDown':
+                    if (this.tRex.state == TREX_STATE.DUCK)
+                    {
+                        this.tRex.state = TREX_STATE.MOVE;
+                    }
             }
         }, false);
         Graphics.canvas.addEventListener('mousedown', (event) => {
@@ -168,42 +189,17 @@ export default class TRexJump
                 }
             }
         }, false);
-
-        this.backgroundList = [];
-
-        for(let i = 0; i < 4; i++)
-        {
-            let tmp = BACKGROUND_LIST[Math.floor(Math.random() * BACKGROUND_LIST.length)];
-            //let tmp = BACKGROUND_LIST[0];
-            for(let j = 0; j < 10; j++) this.backgroundList.push(tmp);
-        }
     }
     public update()
     {
         //console.log("TRexJump update!");
-        /*
-        const image = new Image(), image2 = new Image();
-        image.src = this.backgroundList[this.backgroundStt];
-        image2.src = this.backgroundList[(this.backgroundStt + 1) % this.backgroundList.length];
-
-        let tRex = this;
-        image.onload = function() {
-            if (Graphics.ctx) {
-                Graphics.ctx.drawImage(image, tRex.sceneNum, 0);
-                if (tRex.sceneNum <= Graphics.canvas.width - image.width)
-                {
-                    Graphics.ctx.drawImage(image2, tRex.sceneNum + image2.width, 0);
-                }
-            }
-        };
-        */
-        let image1 = this.backgroundList[this.backgroundStt];
-        let image2 = this.backgroundList[(this.backgroundStt + 1) % this.backgroundList.length];
+        let image1 = this.background.getCurrent();
+        let image2 = this.background.getNext();
 
         Graphics.add(image1, this.sceneNum, 0);
-        if (this.sceneNum <= Graphics.canvas.width - 1000)
+        if (this.sceneNum <= Graphics.canvas.width - BACKGROUND_WIDTH)
         {
-            Graphics.add(image2, this.sceneNum + 1000, 0);
+            Graphics.add(image2, this.sceneNum + BACKGROUND_WIDTH, 0);
         }
 
         
@@ -213,11 +209,11 @@ export default class TRexJump
         {
             case GAME_STATE.GAME_PLAY:
                 this.sceneNum -= gameSpeed;
-                if (this.sceneNum <= -1000)
+                if (this.sceneNum <= - BACKGROUND_WIDTH)
                 {
                     //while(this.sceneNum <= -image.width) this.sceneNum += image.width;
-                    this.sceneNum += 1000;
-                    this.backgroundStt = (this.backgroundStt + 1) % this.backgroundList.length;
+                    this.sceneNum += BACKGROUND_WIDTH;
+                    this.background.stt = (this.background.stt + 1) % this.background.list.length;
                 }
                 this.tRex.update();
                 this.score.update();
@@ -235,7 +231,7 @@ export default class TRexJump
                     Graphics.ctx.textAlign = "center";
                     Graphics.ctx.fillText("GAME OVER", 350, 150);
                     Graphics.ctx.font = "30px Cambria";
-                    Graphics.ctx.fillText(`Highscore: ${this.score.maxScore}`, 350, 200);
+                    Graphics.ctx.fillText(`Highscore: ${Math.floor(this.score.maxScore)}`, 350, 200);
                     this.tRex.state = TREX_STATE.DEAD;
                     this.tRex.update();
                     this.obtacles.update(true);
@@ -301,9 +297,11 @@ enum TREX_STATE {
     JUMP,
     FALL,
     DEAD,
-    IDLE
+    IDLE,
+    DUCK
 }
 
+//Sprite: use to load sprite of object
 class Sprite 
 {
     sprites: string[];
@@ -332,15 +330,18 @@ class Sprite
         return this.stt;
     }
 }
-
+//Trex: compare (sprite, x, y, width, ...)
 class TRex{
     moveSprite: Sprite;
     jumpSprite: Sprite;
     fallSprite: Sprite;
     deadSprite: Sprite;
     idleSprite: Sprite;
+    duckSprite: Sprite;
     width: number;
+    widthDefault: number;
     height: number;
+    heightDefault: number;
     x: number;
     xDefault: number;
     y: number;
@@ -354,17 +355,21 @@ class TRex{
     }
     public start() {
         console.log('TRex created');
+        //DINOSAUR_DUCK_1
         this.moveSprite = new Sprite([DINOSAUR_MOVE_1, DINOSAUR_MOVE_2, DINOSAUR_MOVE_3, DINOSAUR_MOVE_4, DINOSAUR_MOVE_5, DINOSAUR_MOVE_6, DINOSAUR_MOVE_7, DINOSAUR_MOVE_8]);
         this.jumpSprite = new Sprite([DINOSAUR_1, DINOSAUR_2, DINOSAUR_3, DINOSAUR_4, DINOSAUR_5, DINOSAUR_6, DINOSAUR_7, DINOSAUR_8]);//, 
         this.fallSprite = new Sprite([DINOSAUR_9, DINOSAUR_10, DINOSAUR_11, DINOSAUR_12]);
         this.deadSprite = new Sprite([DINOSAUR_DEAD_1]);
         this.idleSprite = new Sprite([DINOSAUR_IDLE_1]);
+        this.duckSprite = new Sprite([DINOSAUR_DUCK_1]);
         this.xDefault = 10;
         this.yDefault = 250;
         this.jumpSizeDefault = 5;
+        this.widthDefault = 100;
+        this.heightDefault = 100;
         
-        this.width = 100;
-        this.height = 100;
+        this.width = this.widthDefault;
+        this.height = this.heightDefault;
         this.x = this.xDefault;
         this.y = this.yDefault;
         this.jumpSize = this.jumpSizeDefault;
@@ -379,6 +384,10 @@ class TRex{
         switch(this.state)
         {
         case TREX_STATE.MOVE:
+            this.width = this.widthDefault;
+            this.height = this.heightDefault;
+            this.x = this.xDefault;
+            this.y = this.yDefault;
             this.jumpSprite.stt = this.fallSprite.stt = 0;
             this.moveSprite.addStt();
             image.src = this.moveSprite.getSprite();
@@ -413,13 +422,26 @@ class TRex{
         case TREX_STATE.DEAD: 
             this.y = this.yDefault;
             image.src = this.deadSprite.getSprite();
-            w = w * 4 / 3;
-            h = h * 2 / 3;
-            y += this.height - h + 10;
+            w = this.widthDefault * 4 / 3 - 10;
+            h = this.heightDefault * 2 / 3 - 10;
+            y = this.heightDefault - h + 10 + this.yDefault;
+            this.width = w;
+            this.height = h;
+            this.y = y;
             break;
         case TREX_STATE.IDLE:
             this.y = this.yDefault;
             image.src = this.idleSprite.getSprite();
+            break;
+        case TREX_STATE.DUCK:
+            this.y = this.yDefault;
+            image.src = this.duckSprite.getSprite();
+            w = this.widthDefault * 4 / 3 - 10;
+            h = this.heightDefault * 2 / 3 - 10;
+            y = this.heightDefault - h + 10 + this.yDefault;
+            this.width = w;
+            this.height = h;
+            this.y = y;
             break;
         }
 
@@ -432,7 +454,7 @@ class TRex{
         };*/
     }
 }
-
+//Obstacles: manage obstacle and handle collision
 class Obstacles{
     obtacles: Obstacle[];
     public constructor()
@@ -441,7 +463,7 @@ class Obstacles{
     }
     public start()
     {
-        this.obtacles = [new FlyDino(1000), new Tree(1500)];
+        this.obtacles = [new FlyDino(1000), new Cactus(1500)];
     }
     public update(isStop: boolean = false)
     {
@@ -468,13 +490,11 @@ class Obstacles{
             {
                 case 0:
                 case 1:
-                    this.obtacles.push(new Tree(this.obtacles[this.obtacles.length - 1].x + Math.floor(Math.random() * 1000) + 500));
-                    break;
                 case 2:
-                    this.obtacles.push(new FlyDino(this.obtacles[this.obtacles.length - 1].x + Math.floor(Math.random() * 1000) + 500));
+                    this.obtacles.push(new Cactus(this.obtacles[this.obtacles.length - 1].x + Math.floor(Math.random() * 1000) + 500));
                     break;
                 default:
-                    this.obtacles.push(new FlyDino(this.obtacles[this.obtacles.length - 1].x + Math.floor(Math.random() * 1000) + 500, '../assets/fly-dinosaur/2.png'));
+                    this.obtacles.push(new FlyDino(this.obtacles[this.obtacles.length - 1].x + Math.floor(Math.random() * 1000) + 500));
                     break;
             }
             
@@ -527,12 +547,12 @@ class Obstacle
     }
 }
 
-class Tree extends Obstacle
+class Cactus extends Obstacle
 {
     public constructor(x: number)
     {
         super();
-        this.sprite = new Sprite(['../assets/Cactus/Cactus.png']);
+        this.sprite = new Sprite([CACTUS]);
         this.x = x;
         this.width = 60;
         this.height = 80;
@@ -543,18 +563,19 @@ class Tree extends Obstacle
 
 class FlyDino extends Obstacle
 {
-    public constructor(x: number, sprite: string = '../assets/fly-dinosaur/1.png')
+    public constructor(x: number)
     {
         super();
-        this.sprite = new Sprite([sprite]);
+        this.sprite = new Sprite([FLY_DINO_1, FLY_DINO_2]);
+        this.sprite.stt = Math.floor(Math.random() * 2);
         this.x = x;
         this.width = 80;
         this.height = 50;
-        this.y = 150;
+        this.y = Math.floor(Math.random() * 2) * (220 - 150) + 150;//150 or 220
         this.moveSpeed = 1;
     }
 }
-
+//Score: manage score and high score
 class Score{
     score: number;
     level: number;
@@ -573,10 +594,10 @@ class Score{
     {
         if (!isStop) 
         {
-            this.score += 1;
+            this.score += gameSpeed/5;
             if (this.score > this.level)
             {
-                gameSpeed += 0.5;
+                gameSpeed += 1;
                 this.level += 1000;
             }
         }
@@ -588,15 +609,34 @@ class Score{
         {
             Graphics.ctx.font = '30px Cambria';
             Graphics.ctx.textAlign = 'start';
-            Graphics.ctx.fillText(this.score.toString(), 20, 30);
+            Graphics.ctx.fillText(Math.floor(this.score).toString(), 20, 30);
         }
     }
 }
-
-class Road{}
-class Clouds{}
-
-
+//Background
+class Background
+{
+    list: string[];
+    stt: number;
+    public constructor()
+    {
+        this.list = [];
+        this.stt = 0;
+        for(let i = 0; i < 6; i++) //Make more background random
+        {
+            let tmp = BACKGROUND_LIST[Math.floor(Math.random() * BACKGROUND_LIST.length)];
+            for(let j = 0; j < 5; j++) this.list.push(tmp);// Make background long = 5 * BACKGROUND_WIDTH
+        }
+    }
+    public getCurrent()
+    {
+        return this.list[this.stt];
+    }
+    public getNext()
+    {
+        return this.list[(this.stt + 1) % this.list.length];
+    }
+}
 
 /*
 - Road (Ground),
