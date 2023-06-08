@@ -36,26 +36,15 @@ export class GameMenuState extends GameState {
     }
     public display(tRexJump: TRexJump) {
         super.display(tRexJump)
-        if (Graphics.ctx) {
-            Graphics.ctx.font = 'bold 50px Cambria'
-            Graphics.ctx.textAlign = 'center'
-            Graphics.ctx.fillText('T-Rex Jump', 350, 150)
-            Graphics.ctx.font = '30px Cambria'
-            Graphics.ctx.fillText(`Highscore: ${tRexJump.getScore().getMaxScore()}`, 350, 200)
-
-            //tRexJump.score.update(true);
-
-            Graphics.ctx.beginPath()
-            Graphics.ctx.arc(350, 260, 40, 0, 2 * Math.PI)
-
-            Graphics.ctx.stroke()
-
-            Graphics.ctx.beginPath()
-            Graphics.ctx.moveTo(340, 240)
-            Graphics.ctx.lineTo(340, 280)
-            Graphics.ctx.lineTo(370, 260)
-            Graphics.ctx.fill()
-        }
+        Graphics.addText('T-Rex Jump', 'bold 50px Cambria', 'center', 350, 150)
+        Graphics.addText(
+            `Highscore: ${tRexJump.getScore().getMaxScore()}`,
+            '30px Cambria',
+            'center',
+            350,
+            200
+        )
+        Graphics.setDrawPlayButton(true)
     }
     public update(tRexJump: TRexJump, deltaTime: number) {
         //console.log('Update')
@@ -94,28 +83,15 @@ export class GameOverState extends GameState {
     }
     public display(tRexJump: TRexJump) {
         super.display(tRexJump)
-        if (Graphics.ctx) {
-            Graphics.ctx.font = 'bold 50px Cambria'
-            Graphics.ctx.textAlign = 'center'
-            Graphics.ctx.fillText('GAME OVER', 350, 150)
-            Graphics.ctx.font = '30px Cambria'
-            Graphics.ctx.fillText(
-                `Highscore: ${Math.floor(tRexJump.getScore().getMaxScore())}`,
-                350,
-                200
-            )
-
-            Graphics.ctx.beginPath()
-            Graphics.ctx.arc(350, 260, 40, 0, 2 * Math.PI)
-
-            Graphics.ctx.stroke()
-
-            Graphics.ctx.beginPath()
-            Graphics.ctx.moveTo(340, 240)
-            Graphics.ctx.lineTo(340, 280)
-            Graphics.ctx.lineTo(370, 260)
-            Graphics.ctx.fill()
-        }
+        Graphics.addText('GAME OVER', 'bold 50px Cambria', 'center', 350, 150)
+        Graphics.addText(
+            `Highscore: ${Math.floor(tRexJump.getScore().getMaxScore())}`,
+            '30px Cambria',
+            'center',
+            350,
+            200
+        )
+        Graphics.setDrawPlayButton(true)
     }
     public update(tRexJump: TRexJump, deltaTime: number) {
         tRexJump.getTRex().setState(TREX_STATE.DEAD)

@@ -25,11 +25,8 @@ export default class Score {
         } else {
             this.maxScore = this.maxScore > this.score ? this.maxScore : this.score
         }
-        if (Graphics.ctx) {
-            Graphics.ctx.font = '30px Cambria'
-            Graphics.ctx.textAlign = 'start'
-            Graphics.ctx.fillText(Math.floor(this.score).toString(), 20, 30)
-        }
+
+        Graphics.addText(Math.floor(this.score).toString(), '30px Cambria', 'start', 20, 30)
     }
     public getScore() {
         return this.score

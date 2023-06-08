@@ -14,7 +14,7 @@ export const BACKGROUND_WIDTH = 1000
 //const IMAGE_HEIGHT = 400
 
 // Game Speed
-const GAME_SPEED_DEFAULT = 5
+export const GAME_SPEED_DEFAULT = 5
 
 //TRexJump: Main class, manage GAME_STATE
 export default class TRexJump {
