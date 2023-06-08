@@ -14,8 +14,8 @@ export default class Sprite {
         if (this.idx >= this.sprites.length) console.log('Error Sprites')
         return this.sprites[this.idx]
     }
-    public goToNext(dentaTime: number) {
-        this.delay += 1 / dentaTime
+    public goToNext(deltaTime: number) {
+        this.delay += 1 * deltaTime
         if (this.delay > DELAY_SPRITE) {
             this.idx++
             this.delay = 0

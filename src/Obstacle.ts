@@ -9,7 +9,7 @@ export default class Obstacle {
     protected x: number
     protected moveSpeed: number
     public constructor() {
-        console.log('Nothing')
+        //console.log('Nothing')
     }
     public render() {
         const image = new Image()

@@ -25,7 +25,7 @@ export default class ObstacleManager {
             this.obstacles[i].setX(tmp)
         }
     }
-    public update(dentaTime: number, isStop = false) {
+    public update(deltaTime: number, isStop = false) {
         const listObstacleNeedToReset = []
         for (let i = 0; i < this.obstacles.length; i++) {
             if (this.obstacles[i].getX() <= BACKGROUND_WIDTH) {
@@ -34,10 +34,10 @@ export default class ObstacleManager {
             if (!isStop) {
                 if (this.obstacles[i].getX() <= BACKGROUND_WIDTH)
                     this.obstacles[i].setX(
-                        this.obstacles[i].getX() - this.obstacles[i].getMoveSpeed() / dentaTime
+                        this.obstacles[i].getX() - this.obstacles[i].getMoveSpeed() * deltaTime
                     )
                 this.obstacles[i].setX(
-                    this.obstacles[i].getX() - TRexJump.getGameSpeed() / dentaTime
+                    this.obstacles[i].getX() - TRexJump.getGameSpeed() * deltaTime
                 )
             }
 

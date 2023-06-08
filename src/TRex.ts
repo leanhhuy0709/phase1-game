@@ -27,7 +27,7 @@ const DINOSAUR_DEAD_1 = 'assets/dinosaur-sprites/Dead (6).png'
 const DINOSAUR_IDLE_1 = 'assets/dinosaur-sprites/Idle (1).png'
 const DINOSAUR_DUCK_1 = 'assets/dinosaur-sprites/Duck (1).png'
 
-const GRAVITY = 3
+const GRAVITY = 1
 
 export enum TREX_STATE {
     MOVE = 1,
@@ -98,16 +98,16 @@ export default class TRex {
         this.jumpSize = this.jumpSizeDefault
         this.state = TREX_STATE.MOVE
     }
-    public update(dentaTime: number) {
+    public update(deltaTime: number) {
         switch (this.state) {
             case TREX_STATE.MOVE:
-                this.move(dentaTime)
+                this.move(deltaTime)
                 break
             case TREX_STATE.JUMP:
-                this.jump(dentaTime)
+                this.jump(deltaTime)
                 break
             case TREX_STATE.FALL:
-                this.fall(dentaTime)
+                this.fall(deltaTime)
                 break
             case TREX_STATE.DEAD:
                 this.dead()
@@ -171,36 +171,36 @@ export default class TRex {
     public resetJumpSize() {
         this.jumpSize = this.jumpSizeDefault
     }
-    private move(dentaTime: number) {
+    private move(deltaTime: number) {
         this.resetX()
         this.resetY()
         this.resetWidth()
         this.resetHeight()
         this.fallSprite.setIdx(0)
         this.jumpSprite.setIdx(0)
-        this.moveSprite.goToNext(dentaTime)
+        this.moveSprite.goToNext(deltaTime)
         Graphics.add(this.moveSprite.getSprite(), this.x, this.y, this.width, this.height)
     }
-    private jump(dentaTime: number) {
+    private jump(deltaTime: number) {
         this.resetWidth()
         this.resetHeight()
         this.resetJumpSize()
         this.moveSprite.setIdx(0)
         this.fallSprite.setIdx(0)
-        this.y -= this.jumpSize / dentaTime
+        this.y -= this.jumpSize * deltaTime - (1 / 2) * deltaTime * deltaTime * GRAVITY
         if (this.jumpSprite.getIdx() + 1 < this.jumpSprite.getSpritesLength())
-            this.jumpSprite.goToNext(dentaTime)
+            this.jumpSprite.goToNext(deltaTime)
         if (this.y <= this.yDefault - 50 * this.jumpSize) this.state = TREX_STATE.FALL
         Graphics.add(this.jumpSprite.getSprite(), this.x, this.y, this.width, this.height)
     }
-    private fall(dentaTime: number) {
+    private fall(deltaTime: number) {
         this.resetWidth()
         this.resetHeight()
         this.jumpSprite.setIdx(0)
         this.moveSprite.setIdx(0)
-        this.y += this.jumpSize / 2 / dentaTime + ((1 / 2) * GRAVITY) / dentaTime / dentaTime
+        this.y += this.jumpSize * deltaTime + (1 / 2) * GRAVITY * deltaTime * deltaTime
         if (this.fallSprite.getIdx() + 2 < this.fallSprite.getSpritesLength())
-            this.fallSprite.goToNext(dentaTime)
+            this.fallSprite.goToNext(deltaTime)
         if (this.y + this.jumpSize * 10 >= this.yDefault)
             this.fallSprite.setIdx(this.fallSprite.getSpritesLength() - 2)
         if (this.y + this.jumpSize * 20 >= this.yDefault)

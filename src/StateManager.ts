@@ -3,15 +3,18 @@ import TRexJump from './TRexJump'
 
 export default class StateManager {
     private currentState: GameState
-    public constructor() {
-        this.currentState = new GameMenuState()
+    public constructor(tRexJump: TRexJump) {
+        this.currentState = new GameMenuState(tRexJump)
     }
     public setCurrentState(state: GameState) {
         this.currentState = state
     }
+    public getCurrentState() {
+        return this.currentState
+    }
 
-    public updateCurrentState(tRexJump: TRexJump) {
-        this.currentState.update(tRexJump)
+    public updateCurrentState(tRexJump: TRexJump, deltaTime: number) {
+        this.currentState.update(tRexJump, deltaTime)
     }
 
     public displayCurrentState(tRexJump: TRexJump) {

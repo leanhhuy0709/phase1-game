@@ -15,11 +15,11 @@ export default class Score {
         this.score = 0
         this.level = 1000
     }
-    public update(dentaTime: number, isStop = false) {
+    public update(deltaTime: number, isStop = false) {
         if (!isStop) {
-            this.score += TRexJump.getGameSpeed() / 5 / dentaTime
+            this.score += (TRexJump.getGameSpeed() / 5) * deltaTime
             if (this.score > this.level) {
-                TRexJump.setGameSpeed(0.5 / dentaTime + TRexJump.getGameSpeed())
+                TRexJump.setGameSpeed(0.5 * deltaTime + TRexJump.getGameSpeed())
                 this.level += 1000
             }
         } else {
