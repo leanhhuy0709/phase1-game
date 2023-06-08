@@ -1,20 +1,19 @@
-import TRexJump from './trex-jump';
+import TRexJump from './TRexJump'
 
 class Game {
-    tRexJump: TRexJump;
+    tRexJump: TRexJump
     public constructor() {
+        this.tRexJump = new TRexJump()
     }
-    public update()
-    {
+    public update() {
         this.tRexJump.update()
-        requestAnimationFrame(() => this.update());
+        requestAnimationFrame(() => this.update())
     }
 
     public start() {
-        this.tRexJump = new TRexJump();
-        requestAnimationFrame(() => this.update());
+        requestAnimationFrame(() => this.update())
     }
 }
 
-let game = new Game();
-game.start();
+const game = new Game()
+game.start()
