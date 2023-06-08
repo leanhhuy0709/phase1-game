@@ -177,7 +177,7 @@ export class GamePlayState extends GameState {
     }
     public update(tRexJump: TRexJump, deltaTime: number) {
         //console.log('Update')
-        tRexJump.setSceneNum(tRexJump.getSceneNum() - TRexJump.getGameSpeed() / deltaTime)
+        tRexJump.setSceneNum(tRexJump.getSceneNum() - TRexJump.getGameSpeed() * deltaTime)
         if (tRexJump.getSceneNum() <= -BACKGROUND_WIDTH) {
             tRexJump.setSceneNum(tRexJump.getSceneNum() + BACKGROUND_WIDTH)
             tRexJump.getBackground().goToNext()
@@ -185,6 +185,7 @@ export class GamePlayState extends GameState {
         tRexJump.getTRex().update(deltaTime)
         tRexJump.getScore().update(deltaTime)
         tRexJump.getObstacleManager().update(deltaTime)
+
         if (tRexJump.getObstacleManager().checkCollision(tRexJump.getTRex())) {
             tRexJump.getStateManager().getCurrentState().clear(tRexJump)
             tRexJump.getStateManager().setCurrentState(new GameOverState(tRexJump))

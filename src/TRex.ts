@@ -187,7 +187,7 @@ export default class TRex {
         this.resetJumpSize()
         this.moveSprite.setIdx(0)
         this.fallSprite.setIdx(0)
-        this.y -= this.jumpSize * deltaTime - (1 / 2) * deltaTime * deltaTime * GRAVITY
+        this.y -= this.jumpSize * deltaTime //- (1 / 2) * deltaTime * deltaTime * GRAVITY
         if (this.jumpSprite.getIdx() + 1 < this.jumpSprite.getSpritesLength())
             this.jumpSprite.goToNext(deltaTime)
         if (this.y <= this.yDefault - 50 * this.jumpSize) this.state = TREX_STATE.FALL
@@ -198,7 +198,9 @@ export default class TRex {
         this.resetHeight()
         this.jumpSprite.setIdx(0)
         this.moveSprite.setIdx(0)
-        this.y += this.jumpSize * deltaTime + (1 / 2) * GRAVITY * deltaTime * deltaTime
+        this.jumpSize = this.jumpSize + GRAVITY * deltaTime
+        this.y += (this.jumpSize / 4) * deltaTime
+        //
         if (this.fallSprite.getIdx() + 2 < this.fallSprite.getSpritesLength())
             this.fallSprite.goToNext(deltaTime)
         if (this.y + this.jumpSize * 10 >= this.yDefault)
