@@ -2,13 +2,12 @@ import Sprite from './Sprite'
 import Graphics from './Graphics'
 
 export default class Obstacle {
-    sprite: Sprite
-    location: number[]
-    width: number
-    height: number
-    y: number
-    x: number
-    moveSpeed: number
+    protected sprite: Sprite
+    protected width: number
+    protected height: number
+    protected y: number
+    protected x: number
+    protected moveSpeed: number
     public constructor() {
         console.log('Nothing')
     }
@@ -20,11 +19,21 @@ export default class Obstacle {
             y = this.y,
             x = this.x
         Graphics.add(image.src, x, y, w, h)
-        /*
-        image.onload = function() {
-            if (Graphics.ctx) {
-                Graphics.ctx.drawImage(image, x, y, w, h);
-            }
-        };*/
+    }
+    public getX() {
+        return this.x
+    }
+    public getY() {
+        return this.y
+    }
+    public getWidth() {
+        return this.width
+    }
+    public setX(x: number) {
+        this.x = x
+    }
+
+    public getMoveSpeed() {
+        return this.moveSpeed
     }
 }

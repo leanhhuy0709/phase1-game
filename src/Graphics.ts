@@ -1,9 +1,9 @@
 //Graphics: Use to draw image synchronically
 export default class Graphics {
-    static canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('game')
-    static ctx: CanvasRenderingContext2D | null = Graphics.canvas.getContext('2d')
-    static imagesString: string[] = []
-    static imagesStat: number[][] = []
+    public static canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('game')
+    public static ctx: CanvasRenderingContext2D | null = Graphics.canvas.getContext('2d')
+    private static imagesString: string[] = []
+    private static imagesStat: number[][] = []
     private static images: HTMLImageElement[] = [] //Images array
     public static add(image: string, x = 0, y = 0, w = -1, h = -1) {
         Graphics.imagesString.push(image)

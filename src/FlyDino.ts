@@ -8,11 +8,11 @@ export default class FlyDino extends Obstacle {
     public constructor(x: number) {
         super()
         this.sprite = new Sprite([FLY_DINO_1, FLY_DINO_2])
-        this.sprite.idx = Math.floor(Math.random() * 2)
+        this.sprite.setIdx(Math.floor(Math.random() * 2))
         this.x = x
         this.width = 80
         this.height = 50
         this.y = Math.floor(Math.random() * 2) * (220 - 150) + 150 //150 or 220
-        this.moveSpeed = 1
+        this.moveSpeed = 0.5
     }
 }

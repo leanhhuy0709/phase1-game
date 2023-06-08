@@ -5,13 +5,15 @@ class Game {
     public constructor() {
         this.tRexJump = new TRexJump()
     }
-    public update() {
-        this.tRexJump.update()
-        requestAnimationFrame(() => this.update())
+    public update(currentTime: number) {
+        const nextTime = Date.now()
+        this.tRexJump.update(nextTime - currentTime)
+        currentTime = Date.now()
+        requestAnimationFrame(() => this.update(currentTime))
     }
 
     public start() {
-        requestAnimationFrame(() => this.update())
+        requestAnimationFrame(() => this.update(Date.now()))
     }
 }
 

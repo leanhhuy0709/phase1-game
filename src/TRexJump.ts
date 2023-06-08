@@ -3,13 +3,15 @@ import TRex from './TRex'
 import ObstacleManager from './ObstacleManager'
 import Score from './Score'
 import Background from './Background'
+import { TREX_STATE } from './TRex'
+import StateManager from './StateManager'
 
 //Canvas
 const CANVAS_WIDTH = 700
 const CANVAS_HEIGHT = 400
 
 //Image width
-const BACKGROUND_WIDTH = 1000
+export const BACKGROUND_WIDTH = 1000
 //const IMAGE_HEIGHT = 400
 
 // Game Speed
@@ -22,30 +24,32 @@ enum GAME_STATE {
 }
 //TRexJump: Main class, manage GAME_STATE
 export default class TRexJump {
-    tRex: TRex
-    obtacles: ObstacleManager
-    sceneNum: number
-    score: Score
-    background: Background
-    state: GAME_STATE
-    static gameSpeed: number
+    private tRex: TRex
+    private obtacles: ObstacleManager
+    private sceneNum: number
+    private score: Score
+    private background: Background
+    private state: GAME_STATE
+    private stateManager: StateManager
+    private static gameSpeed: number
     public constructor() {
-        this.start()
-    }
-    public start() {
         console.log('TRexJump created')
         Graphics.canvas.width = CANVAS_WIDTH
         Graphics.canvas.height = CANVAS_HEIGHT
         Graphics.canvas.setAttribute('style', 'margin: auto')
+        this.background = new Background()
+        this.stateManager = new StateManager()
+        this.start()
+    }
+    public start() {
         this.tRex = new TRex()
         this.sceneNum = 0
         this.obtacles = new ObstacleManager()
         this.score = new Score()
         TRexJump.gameSpeed = GAME_SPEED_DEFAULT
         this.state = GAME_STATE.GAME_MENU
-        this.background = new Background()
 
-        Graphics.canvas.addEventListener(
+        document.addEventListener(
             'keydown',
             (event) => {
                 event.preventDefault()
@@ -55,25 +59,26 @@ export default class TRexJump {
                 switch (code) {
                     case 'ArrowUp':
                     case 'Space':
-                        if (this.tRex.state != TREX_STATE.FALL) this.tRex.state = TREX_STATE.JUMP
+                        if (this.tRex.getState() != TREX_STATE.FALL)
+                            this.tRex.setState(TREX_STATE.JUMP)
                         break
                     case 'ArrowDown':
                         if (
-                            this.tRex.state == TREX_STATE.JUMP ||
-                            this.tRex.state == TREX_STATE.FALL
+                            this.tRex.getState() == TREX_STATE.JUMP ||
+                            this.tRex.getState() == TREX_STATE.FALL
                         ) {
-                            this.tRex.jumpSize *= 3
-                            this.tRex.state = TREX_STATE.FALL
+                            this.tRex.setJumpSize(this.tRex.getJumpSize() * 3)
+                            this.tRex.setState(TREX_STATE.FALL)
                         }
-                        if (this.tRex.state == TREX_STATE.MOVE) {
-                            this.tRex.state = TREX_STATE.DUCK
+                        if (this.tRex.getState() == TREX_STATE.MOVE) {
+                            this.tRex.setState(TREX_STATE.DUCK)
                         }
                         break
                 }
             },
             false
         )
-        Graphics.canvas.addEventListener(
+        document.addEventListener(
             'keyup',
             (event) => {
                 event.preventDefault()
@@ -83,17 +88,18 @@ export default class TRexJump {
                 switch (code) {
                     case 'ArrowUp':
                     case 'Space':
-                        if (this.tRex.state == TREX_STATE.JUMP) this.tRex.state = TREX_STATE.FALL
+                        if (this.tRex.getState() == TREX_STATE.JUMP)
+                            this.tRex.setState(TREX_STATE.FALL)
                         break
                     case 'ArrowDown':
-                        if (this.tRex.state == TREX_STATE.DUCK) {
-                            this.tRex.state = TREX_STATE.MOVE
+                        if (this.tRex.getState() == TREX_STATE.DUCK) {
+                            this.tRex.setState(TREX_STATE.MOVE)
                         }
                 }
             },
             false
         )
-        Graphics.canvas.addEventListener(
+        document.addEventListener(
             'mousedown',
             (event) => {
                 const rect = Graphics.canvas.getBoundingClientRect()
@@ -102,7 +108,7 @@ export default class TRexJump {
                 //console.log("Coordinate x: " + x, "Coordinate y: " + y);
 
                 if (this.state == GAME_STATE.GAME_PLAY) {
-                    if (this.tRex.state != TREX_STATE.FALL) this.tRex.state = TREX_STATE.JUMP
+                    if (this.tRex.getState() != TREX_STATE.FALL) this.tRex.setState(TREX_STATE.JUMP)
                 }
 
                 if (this.state == GAME_STATE.GAME_OVER || this.state == GAME_STATE.GAME_MENU) {
@@ -119,8 +125,11 @@ export default class TRexJump {
             false
         )
     }
-    public update() {
+    public update(dentaTime: number) {
+        console.log(dentaTime)
+        dentaTime /= 10
         //console.log("TRexJump update!");
+        /*
         const image1 = this.background.getCurrent()
         const image2 = this.background.getNext()
 
@@ -128,18 +137,21 @@ export default class TRexJump {
         if (this.sceneNum <= Graphics.canvas.width - BACKGROUND_WIDTH) {
             Graphics.add(image2, this.sceneNum + BACKGROUND_WIDTH, 0)
         }
+        */
+
+        this.stateManager.displayCurrentState(this)
 
         switch (this.state) {
             case GAME_STATE.GAME_PLAY:
-                this.sceneNum -= TRexJump.gameSpeed
+                this.sceneNum -= TRexJump.gameSpeed / dentaTime
                 if (this.sceneNum <= -BACKGROUND_WIDTH) {
                     //while(this.sceneNum <= -image.width) this.sceneNum += image.width;
                     this.sceneNum += BACKGROUND_WIDTH
-                    this.background.stt = (this.background.stt + 1) % this.background.list.length
+                    this.background.goToNext()
                 }
-                this.tRex.update()
-                this.score.update()
-                this.obtacles.update()
+                this.tRex.update(dentaTime)
+                this.score.update(dentaTime)
+                this.obtacles.update(dentaTime)
                 if (this.obtacles.checkCollision(this.tRex)) {
                     this.changeState(GAME_STATE.GAME_OVER)
                 }
@@ -151,11 +163,15 @@ export default class TRexJump {
                     Graphics.ctx.textAlign = 'center'
                     Graphics.ctx.fillText('GAME OVER', 350, 150)
                     Graphics.ctx.font = '30px Cambria'
-                    Graphics.ctx.fillText(`Highscore: ${Math.floor(this.score.maxScore)}`, 350, 200)
-                    this.tRex.state = TREX_STATE.DEAD
-                    this.tRex.update()
-                    this.obtacles.update(true)
-                    this.score.update(true)
+                    Graphics.ctx.fillText(
+                        `Highscore: ${Math.floor(this.score.getMaxScore())}`,
+                        350,
+                        200
+                    )
+                    this.tRex.setState(TREX_STATE.DEAD)
+                    this.tRex.update(dentaTime)
+                    this.obtacles.update(dentaTime, true)
+                    this.score.update(dentaTime, true)
 
                     Graphics.ctx.beginPath()
                     Graphics.ctx.arc(350, 260, 40, 0, 2 * Math.PI)
@@ -167,7 +183,7 @@ export default class TRexJump {
                     Graphics.ctx.lineTo(340, 280)
                     Graphics.ctx.lineTo(370, 260)
                     Graphics.ctx.fill()
-                    this.tRex.update()
+                    this.tRex.update(dentaTime)
                 }
                 break
 
@@ -177,10 +193,10 @@ export default class TRexJump {
                     Graphics.ctx.textAlign = 'center'
                     Graphics.ctx.fillText('T-Rex Jump', 350, 150)
                     Graphics.ctx.font = '30px Cambria'
-                    Graphics.ctx.fillText(`Highscore: ${this.score.maxScore}`, 350, 200)
-                    this.tRex.state = TREX_STATE.IDLE
-                    this.tRex.update()
-                    this.obtacles.update(true)
+                    Graphics.ctx.fillText(`Highscore: ${this.score.getMaxScore()}`, 350, 200)
+                    this.tRex.setState(TREX_STATE.IDLE)
+                    this.tRex.update(dentaTime)
+                    this.obtacles.update(dentaTime, true)
                     //this.score.update(true);
 
                     Graphics.ctx.beginPath()
@@ -193,7 +209,7 @@ export default class TRexJump {
                     Graphics.ctx.lineTo(340, 280)
                     Graphics.ctx.lineTo(370, 260)
                     Graphics.ctx.fill()
-                    this.tRex.update()
+                    this.tRex.update(dentaTime)
                 }
                 break
             default:
@@ -211,16 +227,15 @@ export default class TRexJump {
     public static getGameSpeed() {
         return TRexJump.gameSpeed
     }
-}
-
-//Note to delete
-enum TREX_STATE {
-    MOVE = 1,
-    JUMP,
-    FALL,
-    DEAD,
-    IDLE,
-    DUCK,
+    public getBackground() {
+        return this.background
+    }
+    public getSceneNum() {
+        return this.sceneNum
+    }
+    public setSceneNum(sceneNum: number) {
+        this.sceneNum = sceneNum
+    }
 }
 
 /*

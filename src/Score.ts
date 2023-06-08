@@ -1,12 +1,12 @@
 //import { gameSpeed } from './TRexJump'
 import Graphics from './Graphics'
+import TRexJump from './TRexJump'
 
-let gameSpeed = 0
 //Score: manage score and high score
 export default class Score {
-    score: number
-    level: number
-    maxScore: number
+    private score: number
+    private level: number
+    private maxScore: number
     public constructor() {
         this.maxScore = 0
         this.start()
@@ -15,11 +15,11 @@ export default class Score {
         this.score = 0
         this.level = 1000
     }
-    public update(isStop = false) {
+    public update(dentaTime: number, isStop = false) {
         if (!isStop) {
-            this.score += gameSpeed / 5
+            this.score += TRexJump.getGameSpeed() / 5 / dentaTime
             if (this.score > this.level) {
-                gameSpeed += 1
+                TRexJump.setGameSpeed(0.5 / dentaTime + TRexJump.getGameSpeed())
                 this.level += 1000
             }
         } else {
@@ -30,5 +30,11 @@ export default class Score {
             Graphics.ctx.textAlign = 'start'
             Graphics.ctx.fillText(Math.floor(this.score).toString(), 20, 30)
         }
+    }
+    public getScore() {
+        return this.score
+    }
+    public getMaxScore() {
+        return this.maxScore
     }
 }
