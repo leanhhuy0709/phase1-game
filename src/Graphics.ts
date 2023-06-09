@@ -1,4 +1,5 @@
 //Graphics: Use to draw image synchronically
+
 export default class Graphics {
     public static canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('game')
     public static ctx: CanvasRenderingContext2D | null = Graphics.canvas.getContext('2d')

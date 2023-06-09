@@ -13,8 +13,11 @@ export default class ObstacleManager {
         const randNum = [1, 2, 4, 4, 5, 6, 6, 8, 8, 10]
         randNum.sort(() => Math.random())
         for (let i = 0; i < 10; i++) {
-            if (randNum[i] % 2) this.obstacles.push(new FlyDino(0))
-            else this.obstacles.push(new Cactus(0))
+            if (randNum[i] % 2) {
+                this.obstacles.push(new FlyDino(0))
+            } else {
+                this.obstacles.push(new Cactus(0))
+            }
         }
         this.start()
     }
@@ -22,14 +25,14 @@ export default class ObstacleManager {
         let tmp = 0
         for (let i = 0; i < 10; i++) {
             tmp = Math.floor(Math.random() * 1000) + 400 + tmp
-            this.obstacles[i].setX(tmp)
+            this.obstacles[i].start(tmp)
         }
     }
     public update(deltaTime: number, isStop = false) {
         const listObstacleNeedToReset = []
         for (let i = 0; i < this.obstacles.length; i++) {
             if (this.obstacles[i].getX() <= BACKGROUND_WIDTH) {
-                this.obstacles[i].render()
+                this.obstacles[i].render(deltaTime, isStop)
             }
             if (!isStop) {
                 if (this.obstacles[i].getX() <= BACKGROUND_WIDTH)
@@ -39,10 +42,9 @@ export default class ObstacleManager {
                 this.obstacles[i].setX(
                     this.obstacles[i].getX() - TRexJump.getGameSpeed() * deltaTime
                 )
-            }
-
-            if (this.obstacles[i].getX() < -this.obstacles[i].getWidth() && !isStop) {
-                listObstacleNeedToReset.push(i)
+                if (this.obstacles[i].getX() < -this.obstacles[i].getWidth() && !isStop) {
+                    listObstacleNeedToReset.push(i)
+                }
             }
         }
         if (isStop) return

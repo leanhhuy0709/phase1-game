@@ -1,6 +1,7 @@
 import Graphics from './Graphics'
 import Sprite from './Sprite'
 import TRexJump, { GAME_SPEED_DEFAULT } from './TRexJump'
+import { TRexInterface } from './types/trex'
 
 const DINOSAUR_1 = 'assets/dinosaur-sprites/Jump (1).png'
 const DINOSAUR_2 = 'assets/dinosaur-sprites/Jump (2).png'
@@ -39,7 +40,7 @@ export enum TREX_STATE {
     DUCK,
 }
 //TRex: compare (sprite, x, y, width, ...)
-export default class TRex {
+export default class TRex implements TRexInterface {
     private moveSprite: Sprite
     private jumpSprite: Sprite
     private fallSprite: Sprite
@@ -172,63 +173,68 @@ export default class TRex {
     public resetJumpSize() {
         this.jumpSize = this.jumpSizeDefault
     }
-    private move(deltaTime: number) {
+    public move(deltaTime: number) {
         this.resetX()
         this.resetY()
         this.resetWidth()
         this.resetHeight()
+        this.resetJumpSize()
         this.fallSprite.setIdx(0)
         this.jumpSprite.setIdx(0)
         this.moveSprite.goToNext(deltaTime)
-        Graphics.add(this.moveSprite.getSprite(), this.x, this.y, this.width, this.height)
+        Graphics.add(this.moveSprite.getCurrent(), this.x, this.y, this.width, this.height)
     }
-    private jump(deltaTime: number) {
+    public jump(deltaTime: number) {
         this.resetWidth()
         this.resetHeight()
-        this.resetJumpSize()
+        //this.resetJumpSize()
+        if (this.jumpSize > this.jumpSizeDefault) this.resetJumpSize()
         this.moveSprite.setIdx(0)
         this.fallSprite.setIdx(0)
+        this.jumpSize = this.jumpSize - (GRAVITY * deltaTime) / 40
         this.y -= (this.jumpSize * deltaTime * TRexJump.getGameSpeed()) / GAME_SPEED_DEFAULT //- (1 / 2) * deltaTime * deltaTime * GRAVITY
-        if (this.jumpSprite.getIdx() + 1 < this.jumpSprite.getSpritesLength())
+        if (this.jumpSprite.getIdx() + 1 < this.jumpSprite.getLength())
             this.jumpSprite.goToNext(deltaTime)
-        if (this.y <= this.yDefault - 50 * this.jumpSize) this.state = TREX_STATE.FALL
-        Graphics.add(this.jumpSprite.getSprite(), this.x, this.y, this.width, this.height)
+        if (this.y <= 0) this.state = TREX_STATE.FALL
+        Graphics.add(this.jumpSprite.getCurrent(), this.x, this.y, this.width, this.height)
     }
-    private fall(deltaTime: number) {
+    public fall(deltaTime: number) {
         this.resetWidth()
         this.resetHeight()
+        if (this.jumpSize < this.jumpSizeDefault) this.resetJumpSize()
         this.jumpSprite.setIdx(0)
         this.moveSprite.setIdx(0)
         this.jumpSize = this.jumpSize + GRAVITY * deltaTime
         this.y += ((this.jumpSize / 5) * deltaTime * TRexJump.getGameSpeed()) / GAME_SPEED_DEFAULT
         //
-        if (this.fallSprite.getIdx() + 2 < this.fallSprite.getSpritesLength())
+        if (this.fallSprite.getIdx() + 2 < this.fallSprite.getLength())
             this.fallSprite.goToNext(deltaTime)
         if (this.y + this.jumpSize * 10 >= this.yDefault)
-            this.fallSprite.setIdx(this.fallSprite.getSpritesLength() - 2)
+            this.fallSprite.setIdx(this.fallSprite.getLength() - 2)
         if (this.y + this.jumpSize * 20 >= this.yDefault)
-            this.fallSprite.setIdx(this.fallSprite.getSpritesLength() - 1)
+            this.fallSprite.setIdx(this.fallSprite.getLength() - 1)
         if (this.y >= this.yDefault) {
             this.y = this.yDefault
             this.state = TREX_STATE.MOVE
             this.fallSprite.setIdx(0)
         }
-        Graphics.add(this.fallSprite.getSprite(), this.x, this.y, this.width, this.height)
+        Graphics.add(this.fallSprite.getCurrent(), this.x, this.y, this.width, this.height)
     }
-    private dead() {
+    public dead() {
         this.width = (this.widthDefault * 4) / 3 - 10
         this.height = (this.heightDefault * 2) / 3 - 10
         this.y = this.heightDefault - this.height + 10 + this.yDefault
-        Graphics.add(this.deadSprite.getSprite(), this.x, this.y, this.width, this.height)
+        Graphics.add(this.deadSprite.getCurrent(), this.x, this.y, this.width, this.height)
     }
-    private idle() {
+    public idle() {
         this.resetY()
-        Graphics.add(this.idleSprite.getSprite(), this.x, this.y, this.width, this.height)
+        Graphics.add(this.idleSprite.getCurrent(), this.x, this.y, this.width, this.height)
     }
-    private duck() {
+    public duck() {
+        this.resetJumpSize()
         this.width = (this.widthDefault * 4) / 3 - 10
         this.height = (this.heightDefault * 2) / 3 - 10
         this.y = this.heightDefault - this.height + 10 + this.yDefault
-        Graphics.add(this.duckSprite.getSprite(), this.x, this.y, this.width, this.height)
+        Graphics.add(this.duckSprite.getCurrent(), this.x, this.y, this.width, this.height)
     }
 }

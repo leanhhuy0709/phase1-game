@@ -9,16 +9,15 @@ export default class Obstacle {
     protected x: number
     protected moveSpeed: number
     public constructor() {
-        //console.log('Nothing')
+        //console.log()
     }
-    public render() {
-        const image = new Image()
-        image.src = this.sprite.getSprite()
-        const w = this.width,
-            h = this.height,
-            y = this.y,
-            x = this.x
-        Graphics.add(image.src, x, y, w, h)
+    //eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public start(x: number) {
+        //console.log
+    }
+    public render(deltaTime: number, isStop = false) {
+        Graphics.add(this.sprite.getCurrent(), this.x, this.y, this.width, this.height)
+        if (!isStop) this.sprite.goToNext(deltaTime)
     }
     public getX() {
         return this.x

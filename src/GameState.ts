@@ -2,8 +2,9 @@ import TRexJump from './TRexJump'
 import Graphics from './Graphics'
 import { BACKGROUND_WIDTH } from './TRexJump'
 import { TREX_STATE } from './TRex'
+import { GameStateInterface } from './types/game-state'
 
-export default class GameState {
+export default class GameState implements GameStateInterface {
     public constructor() {
         //console.log('Game state created!')
     }
@@ -17,11 +18,13 @@ export default class GameState {
             Graphics.add(image2, tRexJump.getSceneNum() + BACKGROUND_WIDTH, 0)
         }
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public update(tRexJump: TRexJump, deltaTime: number) {
         //console.log('Update called')
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public clear(tRexJump: TRexJump) {
-        //console.log('Update called')
+        //console.log('Clear called')
     }
 }
 
@@ -153,6 +156,8 @@ export class GamePlayState extends GameState {
     }
     public update(tRexJump: TRexJump, deltaTime: number) {
         //console.log('Update')
+        //tRexJump.getCloudManager().update(deltaTime)
+        tRexJump.getCloudManager().update(deltaTime)
         tRexJump.setSceneNum(tRexJump.getSceneNum() - TRexJump.getGameSpeed() * deltaTime)
         if (tRexJump.getSceneNum() <= -BACKGROUND_WIDTH) {
             tRexJump.setSceneNum(tRexJump.getSceneNum() + BACKGROUND_WIDTH)
@@ -204,7 +209,7 @@ export class GamePlayState extends GameState {
                     tRexJump.getTRex().getState() === TREX_STATE.JUMP ||
                     tRexJump.getTRex().getState() === TREX_STATE.FALL
                 ) {
-                    tRexJump.getTRex().setJumpSize(tRexJump.getTRex().getJumpSize() * 3)
+                    tRexJump.getTRex().setJumpSize(tRexJump.getTRex().getJumpSize() * 1.5)
                     tRexJump.getTRex().setState(TREX_STATE.FALL)
                 }
                 if (tRexJump.getTRex().getState() === TREX_STATE.MOVE) {
@@ -258,7 +263,7 @@ export class GamePlayState extends GameState {
                     tRexJump.getTRex().getState() === TREX_STATE.JUMP ||
                     tRexJump.getTRex().getState() === TREX_STATE.FALL
                 ) {
-                    tRexJump.getTRex().setJumpSize(tRexJump.getTRex().getJumpSize() * 2)
+                    tRexJump.getTRex().setJumpSize(tRexJump.getTRex().getJumpSize() * 1.5)
                     tRexJump.getTRex().setState(TREX_STATE.FALL)
                 }
                 if (tRexJump.getTRex().getState() === TREX_STATE.MOVE) {

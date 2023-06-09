@@ -4,6 +4,7 @@ import ObstacleManager from './ObstacleManager'
 import Score from './Score'
 import Background from './Background'
 import StateManager from './StateManager'
+import CloudManager from './CloudManager'
 
 //Canvas
 const CANVAS_WIDTH = 700
@@ -14,12 +15,13 @@ export const BACKGROUND_WIDTH = 1000
 //const IMAGE_HEIGHT = 400
 
 // Game Speed
-export const GAME_SPEED_DEFAULT = 5
+export const GAME_SPEED_DEFAULT = 4
 
 //TRexJump: Main class, manage GAME_STATE
 export default class TRexJump {
     private tRex: TRex
     private obstacleManager: ObstacleManager
+    private cloudManager: CloudManager
     private sceneNum: number
     private score: Score
     private background: Background
@@ -35,11 +37,13 @@ export default class TRexJump {
         this.tRex = new TRex()
         this.obstacleManager = new ObstacleManager()
         this.score = new Score()
+        this.cloudManager = new CloudManager()
         this.start()
     }
     public start() {
         this.tRex.start()
         this.obstacleManager.start()
+        this.cloudManager.start()
         this.score.start()
         this.sceneNum = 0
         TRexJump.gameSpeed = GAME_SPEED_DEFAULT
@@ -78,6 +82,9 @@ export default class TRexJump {
     }
     public getStateManager() {
         return this.stateManager
+    }
+    public getCloudManager() {
+        return this.cloudManager
     }
 }
 

@@ -19,7 +19,7 @@ export default class Score {
         if (!isStop) {
             this.score += (TRexJump.getGameSpeed() / 5) * deltaTime
             if (this.score > this.level) {
-                TRexJump.setGameSpeed(0.4 * deltaTime + TRexJump.getGameSpeed())
+                TRexJump.setGameSpeed(0.5 + TRexJump.getGameSpeed())
                 this.level += 3000
             }
         } else {
