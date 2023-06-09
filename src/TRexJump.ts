@@ -51,7 +51,7 @@ export default class TRexJump {
     public update(deltaTime: number) {
         //console.log(deltaTime)
         deltaTime /= 10
-        this.stateManager.displayCurrentState(this)
+        this.stateManager.displayCurrentState(this, deltaTime)
         this.stateManager.updateCurrentState(this, deltaTime)
 
         Graphics.draw()

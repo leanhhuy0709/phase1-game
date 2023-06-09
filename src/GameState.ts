@@ -8,7 +8,7 @@ export default class GameState implements GameStateInterface {
     public constructor() {
         //console.log('Game state created!')
     }
-    public display(tRexJump: TRexJump) {
+    public display(tRexJump: TRexJump, deltaTime: number) {
         //console.log("TRexJump update!");
         const image1 = tRexJump.getBackground().getCurrent()
         const image2 = tRexJump.getBackground().getNext()
@@ -31,14 +31,11 @@ export default class GameState implements GameStateInterface {
 export class GameMenuState extends GameState {
     public constructor(tRexJump: TRexJump) {
         super()
-        Graphics.canvas.addEventListener(
-            'mousedown',
-            (event) => this.handleMouseDown(event, tRexJump),
-            false
-        )
+        const handleMouseDownEvent = (event: MouseEvent) => this.handleMouseDown(event, tRexJump)
+        Graphics.canvas.addEventListener('mousedown', handleMouseDownEvent, false)
     }
-    public display(tRexJump: TRexJump) {
-        super.display(tRexJump)
+    public display(tRexJump: TRexJump, deltaTime: number) {
+        super.display(tRexJump, deltaTime)
         Graphics.addText('T-Rex Jump', 'bold 50px Cambria', 'center', 350, 150)
         Graphics.addText(
             `Highscore: ${tRexJump.getScore().getMaxScore()}`,
@@ -51,6 +48,7 @@ export class GameMenuState extends GameState {
     }
     public update(tRexJump: TRexJump, deltaTime: number) {
         //console.log('Update')
+        tRexJump.getCloudManager().update(deltaTime, true)
         tRexJump.getTRex().setState(TREX_STATE.IDLE)
         tRexJump.getTRex().update(deltaTime)
         tRexJump.getObstacleManager().update(deltaTime, true)
@@ -62,16 +60,13 @@ export class GameMenuState extends GameState {
         const y = event.clientY - rect.top
         if ((x - 350) * (x - 350) + (y - 260) * (y - 260) < 40 * 40) {
             tRexJump.start()
-            tRexJump.getStateManager().getCurrentState().clear(tRexJump)
-            tRexJump.getStateManager().setCurrentState(new GamePlayState(tRexJump))
+            tRexJump.getStateManager().setCurrentState(new GamePlayState(tRexJump), tRexJump)
         }
     }
     public clear(tRexJump: TRexJump) {
-        Graphics.canvas.removeEventListener(
-            'mousedown',
-            (event) => this.handleMouseDown(event, tRexJump),
-            false
-        )
+        console.log('Called!')
+        const handleMouseDownEvent = (event: MouseEvent) => this.handleMouseDown(event, tRexJump)
+        Graphics.canvas.removeEventListener('mousedown', handleMouseDownEvent, true)
     }
 }
 
@@ -84,8 +79,8 @@ export class GameOverState extends GameState {
             false
         )
     }
-    public display(tRexJump: TRexJump) {
-        super.display(tRexJump)
+    public display(tRexJump: TRexJump, deltaTime: number) {
+        super.display(tRexJump, deltaTime)
         Graphics.addText('GAME OVER', 'bold 50px Cambria', 'center', 350, 150)
         Graphics.addText(
             `Highscore: ${Math.floor(tRexJump.getScore().getMaxScore())}`,
@@ -97,6 +92,7 @@ export class GameOverState extends GameState {
         Graphics.setDrawPlayButton(true)
     }
     public update(tRexJump: TRexJump, deltaTime: number) {
+        tRexJump.getCloudManager().update(deltaTime, true)
         tRexJump.getTRex().setState(TREX_STATE.DEAD)
         tRexJump.getTRex().update(deltaTime)
         tRexJump.getObstacleManager().update(deltaTime, true)
@@ -110,7 +106,7 @@ export class GameOverState extends GameState {
         if ((x - 350) * (x - 350) + (y - 260) * (y - 260) < 40 * 40) {
             tRexJump.start()
             tRexJump.getStateManager().getCurrentState().clear(tRexJump)
-            tRexJump.getStateManager().setCurrentState(new GamePlayState(tRexJump))
+            tRexJump.getStateManager().setCurrentState(new GamePlayState(tRexJump), tRexJump)
         }
     }
     public clear(tRexJump: TRexJump) {
@@ -151,8 +147,8 @@ export class GamePlayState extends GameState {
             false
         )
     }
-    public display(tRexJump: TRexJump) {
-        super.display(tRexJump)
+    public display(tRexJump: TRexJump, deltaTime: number) {
+        super.display(tRexJump, deltaTime)
     }
     public update(tRexJump: TRexJump, deltaTime: number) {
         //console.log('Update')
@@ -169,7 +165,7 @@ export class GamePlayState extends GameState {
 
         if (tRexJump.getObstacleManager().checkCollision(tRexJump.getTRex())) {
             tRexJump.getStateManager().getCurrentState().clear(tRexJump)
-            tRexJump.getStateManager().setCurrentState(new GameOverState(tRexJump))
+            tRexJump.getStateManager().setCurrentState(new GameOverState(tRexJump), tRexJump)
         }
     }
 

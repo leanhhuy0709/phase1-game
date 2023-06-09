@@ -23,7 +23,7 @@ export default class Cloud {
         this.width = 90
         this.height = 80
         this.y = y
-        this.moveSpeed = (Math.floor(Math.random() * 10) - 5) / 10
+        this.moveSpeed = (Math.random() * 10 - 5) / 10
     }
     public render(deltaTime: number, isStop = false) {
         Graphics.add(this.sprite.getCurrent(), this.x, this.y, this.width, this.height)
