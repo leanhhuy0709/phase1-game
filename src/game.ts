@@ -1,20 +1,21 @@
-import TRexJump from './TRexJump';
+import TRexJump from './TRexJump'
 
 class Game {
-    tRexJump: TRexJump;
+    tRexJump: TRexJump
     public constructor() {
+        this.tRexJump = new TRexJump()
     }
-    public update()
-    {
-        this.tRexJump.update()
-        requestAnimationFrame(() => this.update());
+    public update(currentTime: number) {
+        const nextTime = Date.now()
+        this.tRexJump.update(nextTime - currentTime)
+        currentTime = Date.now()
+        requestAnimationFrame(() => this.update(currentTime))
     }
 
     public start() {
-        this.tRexJump = new TRexJump();
-        requestAnimationFrame(() => this.update());
+        requestAnimationFrame(() => this.update(Date.now()))
     }
 }
 
-let game = new Game();
-game.start();
+const game = new Game()
+game.start()
